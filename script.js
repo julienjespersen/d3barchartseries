@@ -1,20 +1,37 @@
 // Set up the dimensions of the chart
+// const svgWidth = document.querySelector('#bog-body-chart').clientWidth
+// const svgHeight = svgWidth * .66
+// const margin = { top: svgHeight * .12, right: svgWidth * .1, bottom: svgHeight * .2, left: svgWidth * .25 }
 const margin = { top: 70, right: 40, bottom: 60, left: 175 }
+// const width = svgWidth - margin.left - margin.right
 const width = 660 - margin.left - margin.right
+// const height = svgHeight - margin.top - margin.bottom
 const height = 400 - margin.top - margin.bottom
+
+const allWidth = 660
+const allHeight = 400
 
 // Create the SVG container for the chart
 const svg = d3.select("#bog-body-chart").append("svg")
-  .attr("width", width + margin.left + margin.right)
-  .attr("height", height + margin.top + margin.bottom)
+   // Responsive SVG needs these 2 attributes and no width and height attr.
+  .attr("preserveAspectRatio", "xMinYMin meet")
+  .attr("viewBox", '0 0 ' + allWidth + ' ' + allHeight)
+  // .attr("viewBox", "0 0 600 400")
+   // Class to make it responsive.
+  // .classed("svg-content-responsive", true)
+  .attr("width", '100%')
+  .attr("height", '100%')
+  // .attr("width", width + margin.left + margin.right)
+  // .attr("height", height + margin.top + margin.bottom)
   .append("g")
   .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 // Load and process the data
-d3.csv("bog_bodies.csv").then(data => {
+d3.csv('data.csv').then(data => {
   data.forEach(d => {
     d.total = +d.total;
   });
+  console.table(data)
 
   // Sort the data by total
   data.sort(function (a, b) {
@@ -36,12 +53,9 @@ d3.csv("bog_bodies.csv").then(data => {
     .ticks(5)
     .tickSize(0); // remove ticks
 
-
   const yAxis = d3.axisLeft(y)
     .tickSize(0)
     .tickPadding(10);
-
-
 
   // Add vertical gridlines
   svg.selectAll("line.vertical-grid")
@@ -66,7 +80,8 @@ d3.csv("bog_bodies.csv").then(data => {
     .attr("height", y.bandwidth())
     .attr("x", 0)
     .attr("width", function (d) { return x(d.total); })
-    .attr('fill', '#96a5b9')
+    .attr('fill', 'oklch(80% 100% 270 / .75)')
+    // .attr('fill', '#96a5b999')
 
   // Add the x and y axes to the chart
   svg.append("g")
